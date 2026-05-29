@@ -8,7 +8,11 @@ LABEL maintainer="TestFlow Team"
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
-    python3-reportlab \
+    python3-dev \
+    python3-venv \
+    python3-pip \
+    gcc \
+    g++ \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -16,6 +20,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Python reportlab library for PDF generation.
+# Do not force source builds; pip can use binary wheels when available.
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip setuptools wheel && \
+    /opt/venv/bin/pip install --no-cache-dir reportlab
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql
