@@ -18,9 +18,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python reportlab library for PDF generation
-# Debian-based images now block system pip installs unless explicitly allowed.
-RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install --break-system-packages --no-cache-dir reportlab
+# Use a virtual environment so Debian's externally-managed Python does not block installs.
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir reportlab
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql
