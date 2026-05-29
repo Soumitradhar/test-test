@@ -8,8 +8,7 @@ LABEL maintainer="TestFlow Team"
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
-    python3-venv \
-    python3-pip \
+    python3-reportlab \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -17,13 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
-
-# Install Python reportlab library for PDF generation
-# Use a virtual environment so Debian's externally-managed Python does not block installs.
-RUN python3 -m venv /opt/venv && \
-    /opt/venv/bin/pip install --upgrade pip setuptools wheel && \
-    /opt/venv/bin/pip install --no-cache-dir reportlab
-ENV PATH="/opt/venv/bin:$PATH"
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql
